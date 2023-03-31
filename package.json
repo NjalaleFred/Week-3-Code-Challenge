@@ -1,0 +1,11 @@
+{
+  "name": "codechallenge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+   "db" : "json-server --watch db.json"
+  },
+  "author": "Njalale Fred",
+  "license": "ISC"
+}

@@ -1,0 +1,52 @@
+body {
+    background-color: aqua;
+}
+
+.card img {
+    width: 90%;
+    height: 60vh;
+}
+
+h1 {
+    font-size: 50px;
+    text-align: center;
+}
+
+.container{
+    width: 100%;
+    max-width: 1200px;
+    min-height: 100vh;
+
+}
+
+.container .big-box {
+    display: grid;
+    width: 100%;
+    height: 100vh;
+    grid-template-columns: 300px 900px;
+    align-items: center;
+    column-gap: 50px;
+}
+
+.container.first-movie {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#image {
+    border-radius: 30px;
+}
+
+p {
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-style: italic;
+}
+
+ol {
+    margin: 10px;
+    font-size: 18px
+}
+
+
