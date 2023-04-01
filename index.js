@@ -1,9 +1,9 @@
 //Declare variables that I will use oftenly.
-const baseURL = 'http://localhost:3000/films';
+const baseURL = 'http://localhost:3000';
 
 const headers = {
-    'Content-Type' : 'apllication/jaon',
-};
+    'Content-Type' : 'application/json'
+}
 
 //Load your content to the dome
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 //In it is another function that renders the first character.
 
 function fetchFilm1(){
-    fetch(`${baseURL}/1`, {
+    fetch(`${baseURL}/films/1`, {
         method : 'GET',
         headers,
     })
@@ -46,34 +46,56 @@ function renderFilm(film){
    let AvailableTickets = `${film.capacity}` - `${film.tickets_sold}`
 
    const p = document.createElement('p')
-   p.textContent =  `Available tickets : ${AvailableTickets}`
+   p.innerText =  `Available tickets : ${AvailableTickets}`
 
    const btn = document.createElement('button')
-   btn.textContent = 'Buy Ticket'
+   btn.innerText = 'Buy Ticket'
+   btn.type = 'button'
 
    //Here the btn receives a callback function that is executed when it is clicked.
-    btn.addEventListener('click', function(){
-        if (AvailableTickets > 0){
-            AvailableTickets --;
-            if (AvailableTickets ===0){
+    btn.addEventListener('click', () => {
+
+        if (`${film.capacity}`>`${film.tickets_sold}`){
+            film.tickets_sold+=1;
+            AvailableTickets-=1;
+            if (`${film.capacity}`=== `${film.tickets_sold}`){
                 btn.innerHTML = 'Sold Out';
                 btn.disabled = true;
+
             } else {
                 btn.innerHTML = 'Buy Ticket'
             }
         }
-        p.textContent =  `Available tickets : ${AvailableTickets}`
+
+    //Call a function that will update the number of tickets sold in the server.
+        updateTicket(film)
+        p.textContent = `Available tickets : ${AvailableTickets}`
     })
-   
     //Append the created elements.
     f1.innerHTML = '';
     f1.append(card,p, btn,);
 }
 
+//The function is described and the server is updated using put.
+function updateTicket(film) {
+    fetch(`${baseURL}/films/${film.id}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(film)
+  })
+  .then(response => response.json())
+  .then(updatedFilm => {
+    console.log(updatedFilm);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+}
+
 //Another function that fetches all films is described that will show a list of the films.
 //It received a function that renders the films.
 function fetchFilms(){
-    fetch(`${baseURL}`, {
+    fetch(`${baseURL}/films`, {
         method : 'GET',
         headers
     })
@@ -84,8 +106,6 @@ function fetchFilms(){
     })
 }
 
-
-
 //The function that renders the films is described.
 function renderFilms(film){
 
@@ -95,10 +115,13 @@ function renderFilms(film){
 //A forEach loop is used to loop over the the films and then renders the film titles.
    film.forEach((film) => {
     const list = document.createElement('ul');
-    list.className = "list"
+    list.className = "films"
     list.innerHTML = `
     <li> ${film.id} : ${film.title} </li>
    `
+   if (film.tickets_sold >= film.capacity) {
+    list.classList.add('sold-out');
+}
 
 /*Instead of creating another get request you just pass the renderFilm
 as a callback function as it is reusable.*/ 
