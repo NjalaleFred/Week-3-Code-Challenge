@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 //Describe a function fetchFilms1 that will fetch the first film.
 //In it is another function that renders the first character.
-
 function fetchFilm1(){
     fetch(`${baseURL}/films/1`, {
         method : 'GET',
@@ -42,16 +41,18 @@ function renderFilm(film){
     <p> Runtime : ${film.runtime} min </p>
     <p> Showtime : ${film.showtime} </p>
     `
-//Available tickets is calculated.
+    
+    //Available tickets is calculated.
    let AvailableTickets = `${film.capacity}` - `${film.tickets_sold}`
 
    const p = document.createElement('p')
    p.innerText =  `Available tickets : ${AvailableTickets}`
 
    const btn = document.createElement('button')
+   btn.className = "Buy"
    btn.innerText = 'Buy Ticket'
    btn.type = 'button'
-
+   
    //Here the btn receives a callback function that is executed when it is clicked.
     btn.addEventListener('click', () => {
 
@@ -68,9 +69,10 @@ function renderFilm(film){
         }
 
     //Call a function that will update the number of tickets sold in the server.
-        updateTicket(film)
-        p.textContent = `Available tickets : ${AvailableTickets}`
+    updateTicket(film)
+    p.textContent = `Available tickets : ${AvailableTickets}`
     })
+    
     //Append the created elements.
     f1.innerHTML = '';
     f1.append(card,p, btn,);
@@ -106,31 +108,42 @@ function fetchFilms(){
     })
 }
 
-//The function that renders the films is described.
+/*The function that renders the films is described.*/
 function renderFilms(film){
 
     const allFilms = document.querySelector('#all_films')
     allFilms.innerHTML = '<h2> MENU </h2>'
-
-//A forEach loop is used to loop over the the films and then renders the film titles.
+    
+    /*A forEach loop is used to loop over the the films and then renders the film titles.*/
    film.forEach((film) => {
     const list = document.createElement('ul');
     list.className = "films"
-    list.innerHTML = `
-    <li> ${film.id} : ${film.title} </li>
-   `
-   if (film.tickets_sold >= film.capacity) {
-    list.classList.add('sold-out');
-}
+    list.innerHTML = `<li> ${film.id} : ${film.title} </li> <button id="delete">Deleted</button>`
 
-/*Instead of creating another get request you just pass the renderFilm
-as a callback function as it is reusable.*/ 
 
-    list.addEventListener('click', ()=> {
-        renderFilm(film);
+   /*You grab the delete button and delete the film.*/
+   let remove = list.querySelector('#delete')
+   remove.addEventListener('click',(e) => {
+    e.target.parentNode.remove()
+    deleteFilm(film)
     })
+
+    /*Instead of creating another get request you just pass the 
+    renderFilm as a callback function as it is reusable.*/ 
+    list.addEventListener('click', ()=> {renderFilm(film);})
+
 
    //Created elements are then appended.
    allFilms.append(list);
-});
+})
+};
+
+/*Describe a function that will delete the film from the list*/
+function deleteFilm(film){
+    fetch(`${baseURL}/films/${film.id}`, {
+        method : 'DELETE',
+        headers,
+    })
+    .then(resp => resp.json())
+    .then(film => console.log(film))
 }
