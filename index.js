@@ -22,7 +22,7 @@ function fetchFilm1(){
         headers,
     })
     .then((resp) => resp.json())
-    .then(renderFilm1)
+    .then(renderFilm)
     .catch((error) => {
         console.log(error);
     });
@@ -31,7 +31,7 @@ function fetchFilm1(){
 let f1 = document.querySelector('#f1_details')
 
 //The function that renders the film is described. 
-function renderFilm1(film){
+function renderFilm(film){
     const card = document.createElement('div')
     card.className = "card"
 
@@ -66,6 +66,7 @@ function renderFilm1(film){
     })
    
     //Append the created elements.
+    f1.innerHTML = '';
     f1.append(card,p, btn,);
 }
 
@@ -83,6 +84,8 @@ function fetchFilms(){
     })
 }
 
+
+
 //The function that renders the films is described.
 function renderFilms(film){
 
@@ -91,14 +94,20 @@ function renderFilms(film){
 
 //A forEach loop is used to loop over the the films and then renders the film titles.
    film.forEach((film) => {
-    const list = document.createElement('div');
+    const list = document.createElement('ul');
     list.className = "list"
     list.innerHTML = `
-        <ol> ${film.id} : ${film.title} </ol>
-    `
+    <li> ${film.id} : ${film.title} </li>
+   `
 
-//Created elements are then appended.
-    allFilms.append(list);
-   });
+/*Instead of creating another get request you just pass the renderFilm
+as a callback function as it is reusable.*/ 
+
+    list.addEventListener('click', ()=> {
+        renderFilm(film);
+    })
+
+   //Created elements are then appended.
+   allFilms.append(list);
+});
 }
-
