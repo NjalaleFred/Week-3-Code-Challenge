@@ -118,6 +118,7 @@ function renderFilms(film){
    film.forEach((film) => {
     const list = document.createElement('ul');
     list.className = "films"
+    
     list.innerHTML = `<li> ${film.id} : ${film.title} </li> <button id="delete">Deleted</button>`
 
 
